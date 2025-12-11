@@ -5,10 +5,11 @@ export interface GameContent {
         values: string[];
     };
     quiz: {
-        quote: string;
-        author: string;
-        correct_explanation: string;
-    };
+        question: string;
+        answer: string;
+        options: string[];
+        explanation: string;
+    }[];
     battles: {
         weakness_enemy: string;
         weakness_description: string;
@@ -23,15 +24,24 @@ export interface GameContent {
 
 export const gameData: GameContent = {
     hero: {
-        name: "Tech Lead Taeahn",
+        name: "SANGTAE AHN",
         philosophy: "Leadership is serving the team...",
         values: ["Innovation", "Transparency"]
     },
-    quiz: {
-        quote: "Management is doing things right; leadership is doing the right things.",
-        author: "Peter Drucker",
-        correct_explanation: "It resonates because I value strategic direction over micromanagement."
-    },
+    quiz: [
+        {
+            question: "Management is doing things right; leadership is doing the right things.",
+            answer: "Peter Drucker",
+            options: ["Peter Drucker", "Bill Gates", "Mark Zuckerberg", "Elon Musk"],
+            explanation: "It resonates because I value strategic direction over micromanagement."
+        },
+        {
+            question: "What's Tae's leadership quote? Always be deciding, scaling, and _",
+            answer: "Leaving",
+            options: ["Leaving", "Leading", "Deciding", "Scaling"],
+            explanation: "Always be leaving is a quote that resonates with me because it emphasizes the importance of creating space for others to grow and thrive."
+        }
+    ],
     battles: [
         {
             weakness_enemy: "Silence in Meetings",
