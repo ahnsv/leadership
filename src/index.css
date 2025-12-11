@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-gb-gray: #9ca04c;
+  --color-gb-dark: #0f380f;
+  --color-gb-light: #9bbc0f;
+  --color-gb-accent: #8bac0f;
+  --color-gb-frame: #c0c0c0;
+  --color-gb-screen-bg: #9ca04c;
+  
+  --font-press-start: "Press Start 2P", cursive;
+}
+
+
+
+@layer base {
+  body {
+    @apply bg-gray-900 text-white overflow-hidden;
+  }
+  
+  /* Reset scrollbar styles for v4 compatibility if needed */
+  * {
+     scrollbar-width: thin;
+     scrollbar-color: #888 #f1f1f1;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
