@@ -12,9 +12,10 @@ interface BattleSceneProps {
     isWon: boolean;
     input: GameInput;
     setInput: (input: GameInput) => void;
+    hp: number;
 }
 
-export const BattleScene: React.FC<BattleSceneProps> = ({ enemy, onAttack, onComplete, battleLog, isWon, input, setInput }) => {
+export const BattleScene: React.FC<BattleSceneProps> = ({ enemy, onAttack, onComplete, battleLog, isWon, input, setInput, hp }) => {
 
     // We can hardcode 4 "moves" based on logic.
     // Ideally these come from GameData too, but let's derive them.
@@ -41,9 +42,15 @@ export const BattleScene: React.FC<BattleSceneProps> = ({ enemy, onAttack, onCom
     // Handle Input
     useEffect(() => {
         if (mode === 'MENU') {
-            if (input === 'UP') setSelectedIndex(prev => (prev > 0 ? prev - 1 : prev));
-            else if (input === 'DOWN') setSelectedIndex(prev => (prev < options.length - 1 ? prev + 1 : prev));
-            else if (input === 'A') {
+            if (input === 'UP') {
+                setSelectedIndex(prev => (prev - 2 >= 0 ? prev - 2 : prev));
+            } else if (input === 'DOWN') {
+                setSelectedIndex(prev => (prev + 2 < options.length ? prev + 2 : prev));
+            } else if (input === 'LEFT') {
+                setSelectedIndex(prev => (prev % 2 !== 0 ? prev - 1 : prev));
+            } else if (input === 'RIGHT') {
+                setSelectedIndex(prev => (prev % 2 === 0 && prev + 1 < options.length ? prev + 1 : prev));
+            } else if (input === 'A') {
                 setMode('LOG');
                 setInput(null);
                 onAttack(options[selectedIndex]);
@@ -78,8 +85,18 @@ export const BattleScene: React.FC<BattleSceneProps> = ({ enemy, onAttack, onCom
             </div>
 
             {/* Middle - Player Sprite (Back) */}
-            <div className="flex-1 flex justify-start items-end pb-12 pl-4">
-                <div className="w-16 h-16 bg-gray-400 border-2 border-gb-dark"></div>
+            <div className="flex-1 flex justify-start items-end pb-12 pl-4 relative">
+                <div className="w-16 h-16 bg-gray-400 border-2 border-gb-dark transition-all duration-300 transform hover:scale-105"></div>
+
+                {/* HP Bar */}
+                <div className="absolute top-0 right-4 p-2 bg-white/80 rounded border border-gb-dark">
+                    <div className="text-[10px] font-bold mb-1">LEADER HP</div>
+                    <div className="flex space-x-1">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className={`w-3 h-3 rounded-full border border-black ${i <= hp ? 'bg-red-500' : 'bg-gray-300'}`} />
+                        ))}
+                    </div>
+                </div>
             </div>
 
             {/* Bottom Menu / Dialog */}

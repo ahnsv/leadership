@@ -44,7 +44,7 @@ export const gameData: GameContent = {
     hero: {
         name: "SANGTAE AHN",
         philosophy: "Leadership is serving the team...",
-        values: ["Innovation", "Transparency"]
+        values: ["Innovation", "Transparency", "Growth"]
     },
     quizzes: [
         {
@@ -68,41 +68,58 @@ export const gameData: GameContent = {
     ],
     battles: [
         {
-            id: "b1",
-            enemy: "Silence in Meetings", // Alias for easier use
-            weakness: "Deep Analysis", // Alias
-            description: "I struggle to speak up quickly.",
-
-            weakness_enemy: "Silence in Meetings",
-            weakness_description: "I struggle to speak up quickly.",
-            effective_strength_attack: "Deep Analysis",
-            attack_description: "I used Deep Analysis! I prepared my thoughts beforehand and provided a comprehensive solution."
+            id: "gym1",
+            enemy: "Credibility Cave",
+            weakness: "Model the Way",
+            description: "Gym 1: Demonstrate Value Consistency.",
+            weakness_enemy: "Inconsistency",
+            weakness_description: "Actions do not match words.",
+            effective_strength_attack: "Model the Way",
+            attack_description: "I used Model the Way! I aligned my actions with my shared values."
         },
         {
-            id: "b2",
-            enemy: "Burnout Risk",
-            weakness: "Delegation",
-            description: "I take on too much work.",
-
-            weakness_enemy: "Burnout Risk",
-            weakness_description: "I take on too much work.",
-            effective_strength_attack: "Delegation",
-            attack_description: "I used Delegation! I trusted my junior devs with the module."
+            id: "gym2",
+            enemy: "Vision Peak",
+            weakness: "Inspire Vision",
+            description: "Gym 2: Articulate a Compelling Vision.",
+            weakness_enemy: "Lack of Purpose",
+            weakness_description: "The team feels aimless.",
+            effective_strength_attack: "Inspire Vision",
+            attack_description: "I used Inspire a Shared Vision! I appealed to their personal aspirations."
         },
         {
-            id: "b3",
-            enemy: "Imposter Syndrome",
-            weakness: "Past Successes",
-            description: "I doubt my own abilities.",
-
-            weakness_enemy: "Imposter Syndrome",
-            weakness_description: "I doubt my own abilities.",
-            effective_strength_attack: "Past Successes",
-            attack_description: "I recalled Past Successes! I remembered the successful launch of the last project."
+            id: "gym3",
+            enemy: "Challenge Gorge",
+            weakness: "Challenge Process",
+            description: "Gym 3: Overcome a Major Obstacle.",
+            weakness_enemy: "Stagnation",
+            weakness_description: "We are stuck in the status quo.",
+            effective_strength_attack: "Challenge Process",
+            attack_description: "I used Challenge the Process! I experimented with small wins to find the path."
+        },
+        {
+            id: "gym4",
+            enemy: "Strengthen Falls",
+            weakness: "Enable Others",
+            description: "Gym 4: Develop a Weak Teammate.",
+            weakness_enemy: "Dependence",
+            weakness_description: "Team members rely too much on command.",
+            effective_strength_attack: "Enable Others",
+            attack_description: "I used Enable Others to Act! I coached them to solve the puzzle themselves."
+        },
+        {
+            id: "gym5",
+            enemy: "Celeb Temple",
+            weakness: "Encouragement",
+            description: "Gym 5: Master Genuine Recognition.",
+            weakness_enemy: "Low Morale",
+            weakness_description: "The team feels unappreciated.",
+            effective_strength_attack: "Encouragement",
+            attack_description: "I used Encourage the Heart! I celebrated a specific value-based victory."
         }
     ],
     ending: {
-        future_title: "CTO of Innovation",
-        impact_statement: "I will empower the next generation of engineers to build without fear."
+        future_title: "Exemplary Leader",
+        impact_statement: "I have mastered the Five Practices and am ready to lead with purpose."
     }
 };
