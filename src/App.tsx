@@ -1,65 +1,107 @@
 import { GameboyFrame } from './components/layout/GameboyFrame'
-import { gameData } from './gameData';
-import { useGameState } from './hooks/useGameState';
-import { useGameInput } from './hooks/useGameInput';
+import { useState } from 'react';
 import { IntroScene } from './components/scenes/IntroScene';
 import { QuizScene } from './components/scenes/QuizScene';
+import { MapScene } from './components/scenes/MapScene';
+import { BattleScene } from './components/scenes/BattleScene';
+import { useGameState } from './hooks/useGameState';
+import { useGameInput } from './hooks/useGameInput';
+import { gameData } from './gameData';
 
 function App() {
-  const { gameState, setPhase, nextIntroStep, nextQuiz, startGame } = useGameState();
+  const {
+    phase,
+    introStep,
+    quizIndex,
+    score,
+    mapState,
+    battleState,
+    startGame,
+    nextIntroStep,
+    completeIntro,
+    answerQuiz,
+    movePlayer,
+    startBattle,
+    performAttack,
+    completeBattle
+  } = useGameState();
+
   const { activeInput, setActiveInput } = useGameInput();
 
   return (
-    <GameboyFrame>
-      {gameState.phase === 'START' && (
-        <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-          <h1 className="text-sm font-bold animate-pulse">
-            THE LEADERSHIP
-            <br />
-            JOURNEY
-          </h1>
-          <div className="w-full border-t border-gb-dark my-2"></div>
-          <div className="text-[10px] cursor-pointer" onClick={startGame}>
-            PRESS START
+    <div className="h-screen w-screen bg-stone-100 flex items-center justify-center p-4">
+      <GameboyFrame
+        input={activeInput}
+        setInput={setActiveInput}
+      >
+        {phase === 'START' && (
+          <div className="h-full flex flex-col items-center justify-center animate-fade-in">
+            <div className="text-xl font-bold mb-4 text-center">THE<br />LEADERSHIP<br />JOURNEY</div>
+            <div className="animate-pulse text-xs mt-8">PRESS START</div>
+
+            {/* Allow pressing A to start as well */}
+            {activeInput && (activeInput === 'START' || activeInput === 'A') && (
+              startGame() as unknown as React.ReactNode
+            )}
           </div>
-          {/* Allow pressing A to start as well */}
-          {activeInput && (activeInput === 'START' || activeInput === 'A') && (
-            startGame() as unknown as React.ReactNode
-          )}
+        )}
 
-          <div className="mt-8 text-[8px] opacity-70">
-            © 1995 {gameData.hero.name}
+        {phase === 'INTRO' && (
+          <IntroScene
+            step={introStep}
+            onNextStep={nextIntroStep}
+            onComplete={completeIntro}
+            input={activeInput}
+            setInput={setActiveInput}
+          />
+        )}
+
+        {phase === 'QUIZ' && (
+          <QuizScene
+            question={gameData.quizzes[quizIndex]}
+            onAnswer={(correct) => answerQuiz(correct)}
+            input={activeInput}
+            setInput={setActiveInput}
+          />
+        )}
+
+        {phase === 'MAP' && (
+          <MapScene
+            playerPos={mapState.playerPos}
+            movePlayer={movePlayer}
+            input={activeInput}
+            setInput={setActiveInput}
+            onEncounter={(id) => {
+              const enemy = gameData.battles.find(b => b.id === id);
+              if (enemy) startBattle(enemy);
+            }}
+            defeatedEnemies={mapState.defeatedEnemies}
+          />
+        )}
+
+        {phase === 'BATTLE' && battleState.activeEnemy && (
+          <BattleScene
+            enemy={battleState.activeEnemy}
+            onAttack={performAttack}
+            onComplete={completeBattle}
+            battleLog={battleState.battleLog}
+            isWon={battleState.isWon}
+            input={activeInput}
+            setInput={setActiveInput}
+          />
+        )}
+
+        {phase === 'ENDING' && (
+          <div className="h-full flex flex-col items-center justify-center text-center p-4">
+            <div className="text-lg font-bold mb-4">YOU ARE AN ENVISIONED LEADER!</div>
+            <div className="text-xs mb-2">Score: {score}/{gameData.quizzes.length}</div>
+            <div className="text-[10px]">Resume Unlocked.</div>
           </div>
-        </div>
-      )}
+        )}
 
-      {gameState.phase === 'INTRO' && (
-        <IntroScene
-          step={gameState.introStep}
-          onNextStep={nextIntroStep}
-          onComplete={() => setPhase('QUIZ')}
-          input={activeInput}
-          setInput={setActiveInput}
-        />
-      )}
-
-      {gameState.phase === 'QUIZ' && (
-        <QuizScene
-          quizIndex={gameState.quizIndex}
-          onNextQuiz={nextQuiz}
-          onComplete={() => setPhase('MAP')}
-          input={activeInput}
-          setInput={setActiveInput}
-        />
-      )}
-
-      {gameState.phase === 'MAP' && (
-        <div className="h-full flex items-center justify-center text-center p-4">
-          <span className="text-xs">Phase 3: Map (Coming Soon)</span>
-        </div>
-      )}
-    </GameboyFrame>
-  )
+      </GameboyFrame>
+    </div>
+  );
 }
 
 export default App

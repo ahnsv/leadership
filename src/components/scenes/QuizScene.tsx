@@ -1,70 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { DialogBox } from '../layout/DialogBox';
 import type { GameInput } from '../../hooks/useGameInput';
-import { gameData } from '../../gameData';
+import { type QuizQuestion } from '../../gameData';
+// The gameData import is no longer needed as the question is passed directly
+// import { gameData } from '../../gameData';
 
 interface QuizSceneProps {
-    quizIndex: number;
-    onNextQuiz: (isCorrect: boolean) => void;
-    onComplete: () => void;
+    question: QuizQuestion;
+    onAnswer: (correct: boolean) => void;
     input: GameInput;
     setInput: (input: GameInput) => void;
 }
 
-export const QuizScene: React.FC<QuizSceneProps> = ({ quizIndex, onNextQuiz, onComplete, input, setInput }) => {
+export const QuizScene: React.FC<QuizSceneProps> = ({ question, onAnswer, input, setInput }) => {
+    // Local state for navigation
     const [selectedOption, setSelectedOption] = useState(0);
-    const [showFeedback, setShowFeedback] = useState(false);
-    const [feedbackText, setFeedbackText] = useState('');
-
-    const currentQuiz = gameData.quiz[quizIndex];
-
-    // If we run out of quizzes, complete phase
-    if (!currentQuiz) {
-        useEffect(() => { onComplete() }, []);
-        return null;
-    }
+    const [isAnswered, setIsAnswered] = useState(false);
+    const [feedback, setFeedback] = useState('');
 
     useEffect(() => {
-        if (showFeedback) {
+        if (isAnswered) {
             if (input === 'A') {
+                // Next
                 setInput(null);
-                setShowFeedback(false);
-                setFeedbackText('');
-                const isCorrect = currentQuiz.options[selectedOption] === currentQuiz.answer;
-                onNextQuiz(isCorrect);
-                if (quizIndex + 1 >= gameData.quiz.length) {
-                    onComplete();
-                }
+                setIsAnswered(false);
+                setFeedback('');
+                onAnswer(question.options[selectedOption] === question.answer);
+                setSelectedOption(0);
             }
-            return;
+        } else {
+            // Navigation
+            if (input === 'UP') {
+                setSelectedOption(prev => Math.max(0, prev - 1));
+                setInput(null); // Clear input after processing
+            } else if (input === 'DOWN') {
+                setSelectedOption(prev => Math.min(question.options.length - 1, prev + 1));
+                setInput(null); // Clear input after processing
+            } else if (input === 'A') {
+                // Confirm selection
+                setInput(null);
+                setIsAnswered(true);
+                const isCorrect = question.options[selectedOption] === question.answer;
+                setFeedback(isCorrect ? "Correct!" : "Not quite...");
+            }
         }
-
-        if (input === 'UP') {
-            setSelectedOption(prev => (prev > 0 ? prev - 1 : currentQuiz.options.length - 1));
-            setInput(null);
-        } else if (input === 'DOWN') {
-            setSelectedOption(prev => (prev < currentQuiz.options.length - 1 ? prev + 1 : 0));
-            setInput(null);
-        } else if (input === 'A') {
-            setInput(null);
-            // Check answer
-            const isCorrect = currentQuiz.options[selectedOption] === currentQuiz.answer;
-            setFeedbackText(isCorrect ? "Correct! " + currentQuiz.explanation : "Not quite... " + currentQuiz.explanation);
-            setShowFeedback(true);
-        }
-    }, [input, currentQuiz, selectedOption, showFeedback, onNextQuiz, onComplete, quizIndex, setInput]);
+    }, [input, isAnswered, question, selectedOption, onAnswer, setInput]);
 
 
     return (
-        <div className="h-full w-full bg-white relative flex flex-col pt-2">
+        <div className="h-full w-full flex flex-col bg-white p-2 relative">
             {/* Question Area */}
-            <div className="px-4 text-[10px] sm:text-xs font-press-start mb-4 h-20 overflow-y-auto">
-                {currentQuiz.question}
+            <div className="flex-1 bg-white border-b-2 border-gb-dark mb-2 text-[10px] leading-tight font-bold">
+                {question.question}
             </div>
 
             {/* Options Area */}
             <div className="flex-1 px-8 space-y-2">
-                {currentQuiz.options.map((opt, idx) => (
+                {question.options.map((opt, idx) => (
                     <div key={idx} className={`text-[10px] sm:text-xs font-press-start flex items-center ${selectedOption === idx ? 'font-bold' : ''}`}>
                         <span className="w-4">{selectedOption === idx ? '▶' : ''}</span>
                         <span>{opt}</span>
@@ -72,8 +64,8 @@ export const QuizScene: React.FC<QuizSceneProps> = ({ quizIndex, onNextQuiz, onC
                 ))}
             </div>
 
-            {showFeedback && (
-                <DialogBox text={feedbackText} />
+            {isAnswered && (
+                <DialogBox text={feedback} />
             )}
         </div>
     );

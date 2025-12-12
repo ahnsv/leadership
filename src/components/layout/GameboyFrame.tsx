@@ -4,12 +4,23 @@ import { DPad } from '../controls/DPad';
 import { ActionButtons } from '../controls/ActionButtons';
 import { useGameInput } from '../../hooks/useGameInput';
 
+// Assuming GameInput is a type that covers all possible game inputs (e.g., 'UP', 'DOWN', 'LEFT', 'RIGHT', 'A', 'B', 'START', 'SELECT')
+// If not defined elsewhere, you might need to define it like:
+type GameInput = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'A' | 'B' | 'START' | 'SELECT';
+
 interface GameboyFrameProps {
     children?: React.ReactNode;
+    input?: GameInput | null; // Allow null for no active input
+    setInput?: (input: GameInput | null) => void;
 }
 
-export const GameboyFrame: React.FC<GameboyFrameProps> = ({ children }) => {
-    const { activeInput, setActiveInput } = useGameInput();
+export const GameboyFrame: React.FC<GameboyFrameProps> = ({ children, input, setInput }) => {
+    // We can use the passed input/setInput if we want to visualize button presses
+    const { activeInput: internalActiveInput, setActiveInput: internalSetActiveInput } = useGameInput();
+
+    // Determine which input state and setter to use
+    const currentActiveInput = input !== undefined ? input : internalActiveInput;
+    const currentSetActiveInput = setInput !== undefined ? setInput : internalSetActiveInput;
 
     return (
         <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
@@ -33,23 +44,23 @@ export const GameboyFrame: React.FC<GameboyFrameProps> = ({ children }) => {
 
                 {/* Controls Area */}
                 <div className="flex justify-between items-center px-4 sm:px-8 mb-12">
-                    <DPad activeInput={activeInput} onInput={setActiveInput} />
-                    <ActionButtons activeInput={activeInput} onInput={setActiveInput} />
+                    <DPad activeInput={currentActiveInput} onInput={currentSetActiveInput} />
+                    <ActionButtons activeInput={currentActiveInput} onInput={currentSetActiveInput} />
                 </div>
 
                 {/* Start/Select Buttons */}
                 <div className="flex justify-center space-x-4 mb-8">
                     <div className="flex flex-col items-center -rotate-12">
                         <button className="w-12 h-3 bg-gray-700 rounded-full shadow-inner border border-gray-800 active:bg-gray-800"
-                            onMouseDown={() => setActiveInput('SELECT')}
-                            onMouseUp={() => setActiveInput(null)}
+                            onMouseDown={() => currentSetActiveInput?.('SELECT')}
+                            onMouseUp={() => currentSetActiveInput?.(null)}
                         ></button>
                         <span className="text-[10px] text-blue-900 font-bold tracking-widest mt-1">SELECT</span>
                     </div>
                     <div className="flex flex-col items-center -rotate-12">
                         <button className="w-12 h-3 bg-gray-700 rounded-full shadow-inner border border-gray-800 active:bg-gray-800"
-                            onMouseDown={() => setActiveInput('START')}
-                            onMouseUp={() => setActiveInput(null)}
+                            onMouseDown={() => currentSetActiveInput?.('START')}
+                            onMouseUp={() => currentSetActiveInput?.(null)}
                         ></button>
                         <span className="text-[10px] text-blue-900 font-bold tracking-widest mt-1">START</span>
                     </div>
