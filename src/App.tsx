@@ -66,6 +66,15 @@ function App() {
     };
   }, [audio]);
 
+  // Handle Start Screen Input
+  useEffect(() => {
+    if (phase === 'START' && activeInput && (activeInput === 'START' || activeInput === 'A')) {
+      startGame();
+      setActiveInput(null);
+    }
+  }, [phase, activeInput, startGame, setActiveInput]);
+
+
   return (
     <div className="h-screen w-screen bg-stone-100 flex items-center justify-center p-4">
       {phase === 'CINEMATIC' ? (
@@ -88,7 +97,7 @@ function App() {
 
               {/* Allow pressing A to start as well */}
               {activeInput && (activeInput === 'START' || activeInput === 'A') && (
-                startGame() as unknown as React.ReactNode
+                <div className="hidden" /> // Logic moved to useEffect
               )}
             </div>
           )}

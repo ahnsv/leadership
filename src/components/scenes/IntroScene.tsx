@@ -12,6 +12,7 @@ interface IntroSceneProps {
 }
 
 export const IntroScene: React.FC<IntroSceneProps> = ({ step, onNextStep, onComplete, input, setInput }) => {
+    const [isMessageVisible, setIsMessageVisible] = React.useState(false);
 
     // Dialog sequence
     const dialogs = [
@@ -19,7 +20,7 @@ export const IntroScene: React.FC<IntroSceneProps> = ({ step, onNextStep, onComp
         `My name is ${gameData.hero.name}.`,
         `I define leadership as: "${gameData.hero.philosophy}"`,
         `My core values are ${gameData.hero.values.join(' and ')}.`,
-        "Now, let's test your understanding.",
+        "Before we go out to find a true leadership in the wild, let's test our knowledge about leadership best practices.",
         "Are you ready?"
     ];
 
@@ -29,13 +30,16 @@ export const IntroScene: React.FC<IntroSceneProps> = ({ step, onNextStep, onComp
     useEffect(() => {
         if (input === 'A') {
             setInput(null); // Consume input
-            if (isLastStep) {
+
+            if (!isMessageVisible) {
+                setIsMessageVisible(true);
+            } else if (isLastStep) {
                 onComplete();
             } else {
                 onNextStep();
             }
         }
-    }, [input, isLastStep, onNextStep, onComplete, setInput]);
+    }, [input, isLastStep, onNextStep, onComplete, setInput, isMessageVisible]);
 
     return (
         <div className="h-full w-full flex flex-col items-center justify-center bg-white relative">
@@ -44,10 +48,19 @@ export const IntroScene: React.FC<IntroSceneProps> = ({ step, onNextStep, onComp
                 <span className="text-[10px] text-center">PROF. OAK<br />(PLACEHOLDER)</span>
             </div>
 
-            <DialogBox
-                text={currentText}
-                manualScrollInput={input === 'UP' || input === 'DOWN' ? input : null}
-            />
+            {isMessageVisible && (
+                <DialogBox
+                    text={currentText}
+                    manualScrollInput={input === 'UP' || input === 'DOWN' ? input : null}
+                />
+            )}
+
+            {/* Overlay to prompt user to start dialog if not visible yet */}
+            {!isMessageVisible && (
+                <div className="absolute bottom-10 w-full text-center animate-pulse text-xs text-black">
+                    PRESS A OR ENTER
+                </div>
+            )}
         </div>
     );
 };

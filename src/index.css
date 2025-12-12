@@ -39,3 +39,40 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+/* Retro Shutter Animations */
+@keyframes shutter-down {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes shutter-up {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes shutter-open-top {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes shutter-open-bottom {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-shutter-down {
+  animation: shutter-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-shutter-up {
+  animation: shutter-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-shutter-open-top {
+  animation: shutter-open-top 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-shutter-open-bottom {
+  animation: shutter-open-bottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
